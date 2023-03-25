@@ -1,3 +1,5 @@
+import { jsPDF } from "https://unpkg.com/jspdf@2.5.1/dist/jspdf.es.min.js";
+
 const upload = document.getElementById('upload');
 const list = document.getElementById('list');
 const go = document.getElementById('go');
@@ -69,7 +71,9 @@ function listImages () {
   }
 }
 
-function generate () {}
+function generate () {
+  
+}
 
 window.addEventListener('change', event => {
   if (event.target === upload) {
