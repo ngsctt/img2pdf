@@ -33,6 +33,8 @@ function addImage (files) {
   console.log('Add files...', window.imageList)
   if (!window.imageList) window.imageList = [];
   
+  console.log(files)
+  
   for (const file of files) {
     if (!checkFormat(file.type)) continue;
     
@@ -72,6 +74,7 @@ function generate () {}
 window.addEventListener('change', event => {
   if (event.target === upload) {
     addImage(upload.files);
+    upload.files = null;
     listImages();
   }
 })
