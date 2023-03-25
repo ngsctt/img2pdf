@@ -18,8 +18,24 @@ function addImage (files) {
 }
 
 function listImages () {
+  while (list.firstChild) {
+    list.removeChild(list.lastChild);
+  }
   
+  if (!window.imageList) return;
+  
+  for (const image of window.imageList) {
+    const li = document.createElement('li');
+    li.textContent = image.name;
+    list.append(li);
+  }
 }
 
 function generate () {}
 
+window.addEventListener('change', event => {
+  console.log(event);
+  if (event.target === upload) {
+    addImage(upload.files);
+  }
+})
