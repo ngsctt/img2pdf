@@ -16,7 +16,17 @@ function createRow (...cells) {
 }
 
 function checkFormat (mimetype) {
-  return true;
+  return /image\/.+/.test(mimetype);
+}
+
+function humanFileSize (bytes) {
+  if (bytes < 1024) {
+    return `${bytes} bytes`;
+  } else if (bytes >= 1024 && bytes < 1048576) {
+    return `${(bytes / 1024).toFixed(1)} KB`;
+  } else if (bytes >= 1048576) {
+    return `${(bytes / 1048576).toFixed(1)} MB`;
+  }
 }
 
 function addImage (files) {
@@ -37,7 +47,7 @@ function listImages () {
   if (!window.imageList) return;
   
   for (const image of window.imageList) {
-    list.append(createRow(image.name, image.size));
+    list.append(createRow(image.name, humanFileSize(image.size)));
   }
 }
 
