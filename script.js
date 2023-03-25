@@ -36,12 +36,16 @@ function addImage (files) {
   for (const file of files) {
     if (!checkFormat(file.type)) continue;
     
+    const url = URL.createObjectURL(file)
     const img = new Image;
-    img.src = URL.createObjectURL(file);
+    img.src = url;
+    const { width, height } = img;
     
     window.imageList.push({
       file,
-      img
+      url,
+      width,
+      height
     });
   }
   console.log(window.imageList);
@@ -54,8 +58,12 @@ function listImages () {
   
   if (!window.imageList) return;
   
-  for (const image of window.imageList) {
-    list.append(createRow(image.name, humanFileSize(image.size)));
+  for (const {file, url} of window.imageList) {
+    const tn = new Image;
+    tn.classList.add('thumbnail');
+    tn.src = url;
+    
+    list.append(createRow(tn, file.name, humanFileSize(file.size)));
   }
 }
 
