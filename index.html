@@ -23,11 +23,17 @@
     </main>
     <style>
       :root {
-        --color-bg: #69f7be;
-        --color-text-main: #000000;
         --color-primary: #ffff00;
         --shadow-depth: 0.15rem;
+        --shadow-color: #000000;
         height: 100%;
+        color-scheme: light dark;
+      }
+      
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --shadow-color: cyan;
+        }
       }
 
       * {
@@ -39,9 +45,7 @@
         display: grid;
         place-items: center;
         margin: 0 1rem;
-
         font-family: sans-serif;
-        background-color: var(--color-bg);
       }
 
       main {
@@ -52,21 +56,24 @@
       }
 
       .title {
-        color: #2800ff;
+        color: transparent;
         font-style: normal;
         font-weight: bold;
         font-size: 6rem;
         line-height: 105%;
         margin: 0 0 2rem;
-        text-shadow: .1em .1em 0 0 aqua;
+        text-shadow:
+          -.025em -.025em 0 rgba(  0, 255, 255, 0.5),
+           .025em  .025em 0 rgba(255,   0, 255, 0.5),
+          -.025em -.025em 0 rgba(  0, 255, 255, 1),
+           .025em  .025em 0 rgba(255,   0, 255, 1);
       }
 
       button,
       input {
         font-family: inherit;
         font-size: 100%;
-        background: #ffffff;
-        border: 1px solid #000000;
+        border: 1px solid currentColor;
         box-sizing: border-box;
         border-radius: 4px;
         padding: 0.5rem 1rem;
@@ -74,16 +81,17 @@
       }
 
       button {
+        background-color: fuchsia;
         transform: translate(
           calc(var(--shadow-depth) * -1),
           calc(var(--shadow-depth) * -1)
         );
-        box-shadow: var(--shadow-depth) var(--shadow-depth) 0 0 black;
+        box-shadow: var(--shadow-depth) var(--shadow-depth) 0 0 var(--shadow-color);
       }
 
       button:active {
         transform: none;
-        box-shadow: 0 0 0 0 black;
+        box-shadow: 0 0 0 0 var(--shadow-color);
       }
 
       #ppmm {

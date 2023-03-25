@@ -34,7 +34,15 @@ function addImage (files) {
   if (!window.imageList) window.imageList = [];
   
   for (const file of files) {
-    if (checkFormat(file.type)) window.imageList.push(file);
+    if (!checkFormat(file.type)) continue;
+    
+    const img = new Image;
+    img.src = URL.createObjectURL(file);
+    
+    window.imageList.push({
+      file,
+      img
+    });
   }
   console.log(window.imageList);
 }
