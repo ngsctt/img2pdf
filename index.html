@@ -9,19 +9,91 @@
     <script src="/script.js" defer></script>
   </head>
   <body>
-      <main>
-        <h1 class="title">img2pdf</h1>
-          <p>
-            <input id="upload" type="file"/>
-          </p>
-        <ul id="imglist"></ul>
-        <p>
-          <button id="go">Go</button>
-          <label>
-            <input id="ppmm" type="number" value="5.91"/>
-            pixels/mm
-          </label>
-        </p>
-      </main>
+    <main>
+      <h1 class="title">img2pdf</h1>
+      <p>
+        <input id="upload" type="file" />
+      </p>
+      <ul id="imglist"></ul>
+      <p>
+        <button id="go">Go</button>
+        <label>
+          <input id="ppmm" type="number" value="5.91" />
+          pixels/mm
+        </label>
+      </p>
+    </main>
+    <style>
+      :root {
+        --color-bg: #69f7be;
+        --color-text-main: #000000;
+        --color-primary: #ffff00;
+        --shadow-depth: 0.15rem;
+        height: 100%;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100%;
+        display: grid;
+        place-items: center;
+        margin: 0 1rem;
+
+        font-family: sans-serif;
+        background-color: var(--color-bg);
+      }
+
+      main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .title {
+        color: #2800ff;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 6rem;
+        line-height: 105%;
+        margin: 0 0 2rem;
+      }
+
+      button,
+      input {
+        font-family: inherit;
+        font-size: 100%;
+        background: #ffffff;
+        border: 1px solid #000000;
+        box-sizing: border-box;
+        border-radius: 4px;
+        padding: 0.5rem 1rem;
+        transition: 100ms;
+      }
+
+      button {
+        transform: translate(
+          calc(var(--shadow-depth) * -1),
+          calc(var(--shadow-depth) * -1)
+        );
+        box-shadow: var(--shadow-depth) var(--shadow-depth) 0 0 black;
+      }
+
+      button:active {
+        transform: none;
+        box-shadow: 0 0 0 0 black;
+      }
+
+      #ppmm {
+        width: 6em;
+      }
+
+      h2 {
+        color: #2800ff;
+      }
+    </style>
   </body>
 </html>
