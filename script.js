@@ -74,7 +74,7 @@ function generate () {}
 window.addEventListener('change', event => {
   if (event.target === upload) {
     addImage(upload.files);
-    upload.files = null;
+    upload.value = '';
     listImages();
   }
 })
