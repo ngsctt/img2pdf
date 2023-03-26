@@ -12,11 +12,13 @@
       <p>
           <input id="upload" type="file" multiple="true" accept="image/*" />
       </p>
-      <table id="list">
-        <tbody></tbody>
+      <table>
+        <tbody id="list"></tbody>
         <tfoot>
           <tr>
-            <td colspan=
+            <td id="total-count" colspan="2"></td>
+            <td id="total-size"></td>
+            <td></td>
           </tr>
         </tfoot>
       </table>
@@ -28,6 +30,14 @@
         </label> -->
       </p>
     </main>
+    <template id="list-row">
+      <tr>
+        <td class="tn"></td>
+        <td class="name"></td>
+        <td class="size"></td>
+        <td><button name="remove">❌</button></td>
+      </tr>
+    </template>
     <style>
       :root {
         --color-primary: #ffff00;

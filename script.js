@@ -1,5 +1,10 @@
 const upload = document.getElementById('upload');
 const list = document.getElementById('list');
+const listRow = document.getElementById('list-row').content;
+const total = {
+  count: document.getElementById('total-count'),
+  size: document.getElementById('total-size'),
+};
 const go = document.getElementById('go');
 const ppmm = document.getElementById('ppmm');
 
@@ -41,15 +46,18 @@ async function addImage (files) {
     const url = URL.createObjectURL(file)
     const img = new Image;
     img.src = url;
-    window.imageList.push({ file, img });
+    window.imageList.push({ file, img, name: file.name });
   }
   console.log(window.imageList);
 }
 
 function listImages () {
+  let count = 0, size = 0;
   while (list.firstChild) {
     list.removeChild(list.lastChild);
   }
+  total.count.textContent = '';
+  total.size.textContent = '';
   
   if (!window.imageList) return;
   
@@ -57,8 +65,17 @@ function listImages () {
     const tn = img.cloneNode();
     tn.classList.add('thumbnail');
     
-    list.append(createRow(tn, file.name, humanFileSize(file.size)));
+    //list.append(createRow(tn, file.name, humanFileSize(file.size)));
+    const row = listRow.cloneNode(true);
+    row.querySelector('tn').append(tn);
+    
+    
+    count ++;
+    size += file.size;
   }
+  
+  total.count.textContent = `${count} images total`;
+  total.size.textContent = humanFileSize(size);
 }
 
 async function generate () {
@@ -69,12 +86,12 @@ async function generate () {
   pdf.deletePage(1);
   let page = 0;
   
-  for (const {file, img} of window.imageList) {
+  for (const {img, name} of window.imageList) {
     await img.decode();
     const {width, height} = img;
     pdf.addPage([width, height], width > height ? 'landscape' : 'portrait') && page++;
     pdf.addImage(img, 'PNG', 0, 0, width, height);
-    pdf.outline.add(null, file.name, { pageNumber: page });
+    pdf.outline.add(null, name, { pageNumber: page });
   }
   
   window.open(pdf.output('bloburl'), '_blank')
