@@ -105,12 +105,12 @@ async function listImages () {
 }
 
 async function generate () {
-  const factor = scale.value;
+  const factor = scale.value || 1;
   const pdf = new window.jspdf.jsPDF({
     units: 'px',
     hotfixes: ['px_scaling']
   });
-  pdf.deletePage(1);
+  // pdf.deletePage(1);
   let page = 0;
   
   for (const {file, name, id} of await table.toArray()) {
@@ -124,7 +124,7 @@ async function generate () {
     const w = pdf.internal.pageSize.getWidth();
     const h = pdf.internal.pageSize.getHeight()
     console.log({width, height, w, h })
-    pdf.addImage(img, 'PNG', 0, 0, width, height);
+    pdf.addImage(img, 'PNG', 0, 0, w, h);
     pdf.outline.add(null, name, { pageNumber: page });
     //URL.revokeObjectURL(img.src);
   // });
@@ -138,6 +138,8 @@ window.addEventListener('change', async event => {
     await addImage(upload.files);
     upload.value = '';
     await listImages();
+  } else if (event.target === scale) {
+    window.localStorage.setItem('img2pdf-scale', scale.value);
   }
 });
 
@@ -154,4 +156,5 @@ window.addEventListener('click', async event => {
   
 window.addEventListener('load', event => {
   listImages();
+  scale.value = window.localStorage.getItem('img2pdf-scale') || 1;
 })
