@@ -115,17 +115,21 @@ window.addEventListener('click', event => {
 });
   
 window.addEventListener('load', event => {
-  // Open IndexedDB database
-  const DBOpenRequest = window.indexedDB.open('toDoList', DB_VERSION);
-
-  // Register two event handlers to act on the database being opened successfully, or not
-  DBOpenRequest.onerror = (event) => {
-    console.error('Error loading database.');
+  const request = indexedDB.open('img2pdf');
+  request.onerror = (event) => {
+    console.error('Error loading database');
   };
-
-  DBOpenRequest.onsuccess = (event) => {
-    console.info('Database initialised.');
-    window.db = DBOpenRequest.result;
-    listImages();
+  request.onsuccess = (event) => {
+    window.db = event.target.result;
+  };
+  window.db.onerror = (event) => {
+    console.error(`Database error: ${event.target.errorCode}`);
+  };
+  request.onupgradeneeded = (event) => {
+    const db = event.target.result;
+    const objectStore = db.createObjectStore('images', { autoIncrement: true });
+    objectStore.createIndex('file', 'file', { unique: false });
+    objectStore.createIndex('img', 'img', { unique: false });
+    objectStore.createIndex('name', 'name', { unique: false });
   };
 })
