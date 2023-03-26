@@ -11,6 +11,10 @@ const ppmm = document.getElementById('ppmm');
 const PPMM = 5.91;  // (equivalent to 150dpi)
 const DB_VERSION = 1;
 
+const db = localforage.createInstance({
+  name: "nameHere"
+});
+
 function createRow (...cells) {
   const row = document.createElement('tr');
   for (const content of cells) {

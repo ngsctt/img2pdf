@@ -146,11 +146,18 @@
       }
     </style>
     <script src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://unpkg.com/localforage@1.10.0/dist/localforage.min.js"></script>
     <script type="application/javascript">
       if (!window.jspdf) {
-        console.log('no jsPDF');
+        console.log('jsPDF not loaded from CDN: using fallback');
         const s = document.createElement('script');
         s.src = '/jspdf@2.5.1.umd.min.js';
+        document.body.insertBefore(s, document.body.firstChild);
+      }
+      if (!window.localforage) {
+        console.warn('localForage not loaded from CDN: using fallback');
+        const s = document.createElement('script');
+        s.src = '/localforage@1.10.0.min.js';
         document.body.insertBefore(s, document.body.firstChild);
       }
     </script>
