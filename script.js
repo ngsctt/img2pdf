@@ -51,10 +51,11 @@ async function addImage (files) {
     const url = URL.createObjectURL(file)
     const img = new Image;
     img.src = url;
-    window.imageList.push({ file, img, name: file.name });
-    table.add({ file, img, name: file.name });
+    window.imageList.push({ file, name: file.name });
+    await table.add({ file, name: file.name });
   }
   console.log(window.imageList);
+  console.log(await table.toArray());
 }
 
 async function listImages () {
@@ -69,8 +70,9 @@ async function listImages () {
   
   //await db.images.each(image => console.log(image));
   
-  for (const {file, img, name} of window.imageList) {
-    const tn = img.cloneNode();
+  for (const {file, name} of window.imageList) {
+    const tn = new Image;
+    tn.src = URL.createObjectURL(file);
     tn.classList.add('thumbnail');
     
     //list.append(createRow(tn, file.name, humanFileSize(file.size)));
@@ -97,12 +99,15 @@ async function generate () {
   pdf.deletePage(1);
   let page = 0;
   
-  for (const {img, name} of window.imageList) {
+  for (const {file, name} of window.imageList) {
+    const img = new Image;
+    img.src = URL.createObjectURL(file);
     await img.decode();
     const {width, height} = img;
     pdf.addPage([width, height], width > height ? 'landscape' : 'portrait') && page++;
     pdf.addImage(img, 'PNG', 0, 0, width, height);
     pdf.outline.add(null, name, { pageNumber: page });
+    
   }
   
   window.open(pdf.output('bloburl'), '_blank')
