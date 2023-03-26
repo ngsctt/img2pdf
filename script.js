@@ -12,7 +12,7 @@ const PPMM = 5.91;  // (equivalent to 150dpi)
 const DB_VERSION = 2;
 
 window.db = new window.Dexie('img2pdf');
-window.db.version(DB_VERSION).stores({ images: '++id, name'});
+window.db.version(DB_VERSION).stores({ images: '++id,name'});
 const table = window.db.table('images');
 
 function createRow (...cells) {
@@ -122,21 +122,4 @@ window.addEventListener('click', event => {
 });
   
 window.addEventListener('load', event => {
-  const request = indexedDB.open('img2pdf');
-  request.onerror = (event) => {
-    console.error('Error loading database');
-  };
-  request.onsuccess = (event) => {
-    window.db = event.target.result;
-  };
-  window.db.onerror = (event) => {
-    console.error(`Database error: ${event.target.errorCode}`);
-  };
-  request.onupgradeneeded = (event) => {
-    const db = event.target.result;
-    const objectStore = db.createObjectStore('images', { autoIncrement: true });
-    objectStore.createIndex('file', 'file', { unique: false });
-    objectStore.createIndex('img', 'img', { unique: false });
-    objectStore.createIndex('name', 'name', { unique: false });
-  };
 })
