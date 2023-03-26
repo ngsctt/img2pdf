@@ -107,6 +107,12 @@
         color: #2800ff;
       }
     </style>
+    <script id="jspdf" src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script type="application/javascript">
+      if (window.jsPDF) return;
+      const script = document.createElement('script');
+      script.src = '/jspdf@2.5.1.umd.min.js';
+    </script>
     <script type="module" src="/script.js"></script>
   </body>
 </html>
