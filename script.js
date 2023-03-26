@@ -62,18 +62,16 @@ function listImages () {
 }
 
 async function generate () {
-  let pdf
+  const pdf = new window.jspdf.jsPDF({
+    units: 'px',
+    hotfixes: ['px_scaling']
+  });
+  pdf.deletePage(1);
   
   for (const {file, img} of window.imageList) {
     await img.decode();
     const {width, height} = img;
-    if (!pdf) pdf = new window.jspdf.jsPDF({
-      format: [width, height],
-      orientation: width > height ? 'landscape' : 'portrait',
-      units: 'px',
-      hotfixes: ['px_scaling']
-    });
-    else pdf.addPage([width, height], width > height ? 'landscape' : 'portrait');
+    pdf.addPage([width, height], width > height ? 'landscape' : 'portrait');
     pdf.addImage(img, 'PNG', 0, 0, width, height);
   }
   
