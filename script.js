@@ -9,11 +9,11 @@ const go = document.getElementById('go');
 const ppmm = document.getElementById('ppmm');
 
 const PPMM = 5.91;  // (equivalent to 150dpi)
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 window.db = new window.Dexie('img2pdf');
-const db = window.db;
-db.version(DB_VERSION).stores({ images: '++id'});
+window.db.version(DB_VERSION).stores({ images: '++id, name'});
+const table = window.db.table('images');
 
 function createRow (...cells) {
   const row = document.createElement('tr');
@@ -52,15 +52,7 @@ async function addImage (files) {
     const img = new Image;
     img.src = url;
     window.imageList.push({ file, img, name: file.name });
-    await db.transaction('rw', db.images, async ()=>{
-      await db.images.add({ file, img, name: file.name })
-        .then(x => console.log(x))
-        .catch(error => console.error(error));
-    }).then(() => {
-        console.log("Transaction committed");
-    }).catch(err => {
-        console.error(err.stack);
-    });
+    table.add({ file, img, name: file.name });
   }
   console.log(window.imageList);
 }
