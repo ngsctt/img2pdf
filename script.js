@@ -29,7 +29,7 @@ function humanFileSize (bytes) {
   }
 }
 
-function addImage (files) {
+async function addImage (files) {
   console.log('Add files...', window.imageList)
   if (!window.imageList) window.imageList = [];
   
@@ -41,6 +41,7 @@ function addImage (files) {
     const url = URL.createObjectURL(file)
     const img = new Image;
     img.src = url;
+    await img.decode();
     const { width, height } = img;
     
     window.imageList.push({
@@ -73,9 +74,9 @@ function generate () {
   
 }
 
-window.addEventListener('change', event => {
+window.addEventListener('change', async event => {
   if (event.target === upload) {
-    addImage(upload.files);
+    await addImage(upload.files);
     upload.value = '';
     listImages();
   }
