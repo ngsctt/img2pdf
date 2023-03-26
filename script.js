@@ -71,7 +71,18 @@ function listImages () {
 }
 
 function generate () {
+  let pdf
   
+  for (const {file, url, width, height} of window.imageList) {
+    if (!pdf) pdf = new window.jspdf.jsPDF({
+      format: [width, height],
+      orientation: width > height ? 'landscape' : 'portrait',
+      units: 'px',
+      hotfixes: ['px_scaling']
+    });
+    else pdf.addPage([width, height], width > height ? 'landscape' : 'portrait');
+    pdf.addImage(imageData, format, x, y, width, height)
+  }
 }
 
 window.addEventListener('change', async event => {
