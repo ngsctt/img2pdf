@@ -105,7 +105,7 @@ async function listImages () {
 }
 
 async function generate () {
-  const factor = scale.value || 1;
+  const PPMM = ppmm.value || PPMM;
   const pdf = new window.jspdf.jsPDF({
     units: 'px',
     hotfixes: ['px_scaling']
@@ -120,7 +120,7 @@ async function generate () {
     await img.decode();
     const {width, height} = img;
     console.log('Rendering', {file, name, id, width, height, img})
-    pdf.addPage([width*factor, height*factor], width > height ? 'landscape' : 'portrait') && page++;
+    pdf.addPage([width/PPMM, height/PPMM], width > height ? 'landscape' : 'portrait') && page++;
     const w = pdf.internal.pageSize.getWidth();
     const h = pdf.internal.pageSize.getHeight()
     console.log({width, height, w, h })
