@@ -41,15 +41,7 @@ async function addImage (files) {
     const url = URL.createObjectURL(file)
     const img = new Image;
     img.src = url;
-    await img.decode();
-    const { width, height } = img;
-    
-    window.imageList.push({
-      file,
-      url,
-      width,
-      height
-    });
+    window.imageList.push({ file, img });
   }
   console.log(window.imageList);
 }
@@ -61,19 +53,20 @@ function listImages () {
   
   if (!window.imageList) return;
   
-  for (const {file, url} of window.imageList) {
-    const tn = new Image;
+  for (const {file, img} of window.imageList) {
+    const tn = img.cloneNode();
     tn.classList.add('thumbnail');
-    tn.src = url;
     
     list.append(createRow(tn, file.name, humanFileSize(file.size)));
   }
 }
 
-function generate () {
+async function generate () {
   let pdf
   
-  for (const {file, url, width, height} of window.imageList) {
+  for (const {file, img} of window.imageList) {
+    await img.decode();
+    const {width, height} = img;
     if (!pdf) pdf = new window.jspdf.jsPDF({
       format: [width, height],
       orientation: width > height ? 'landscape' : 'portrait',
@@ -81,8 +74,10 @@ function generate () {
       hotfixes: ['px_scaling']
     });
     else pdf.addPage([width, height], width > height ? 'landscape' : 'portrait');
-    pdf.addImage(imageData, format, x, y, width, height)
+    pdf.addImage(img, 'PNG', 0, 0, width, height);
   }
+  
+  window.open(pdf.output('bloburl'), '_blank')
 }
 
 window.addEventListener('change', async event => {
@@ -91,4 +86,8 @@ window.addEventListener('change', async event => {
     upload.value = '';
     listImages();
   }
-})
+});
+
+window.addEventListener('click', event => {
+  if (event.target.id === 'go') generate();
+});
