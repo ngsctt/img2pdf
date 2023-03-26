@@ -35,7 +35,7 @@
         <td class="tn"></td>
         <td class="name"></td>
         <td class="size"></td>
-        <td><button name="remove">❌</button></td>
+        <td><button name="remove"  class="remove">❌</button></td>
       </tr>
     </template>
     <style>
@@ -113,6 +113,18 @@
           calc(var(--shadow-depth) * -1)
         );
         box-shadow: var(--shadow-depth) var(--shadow-depth) 0 0 var(--shadow-color);
+      }
+      
+      button.remove  {
+        background: none;
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        transform: none;
+        transition: none;
+      }
+      button.remove:active {
+        box-shadow: none;
       }
 
       button:active {

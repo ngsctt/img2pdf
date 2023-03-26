@@ -9,6 +9,7 @@ const go = document.getElementById('go');
 const ppmm = document.getElementById('ppmm');
 
 const PPMM = 5.91;  // (equivalent to 150dpi)
+const DB_VERSION = 1;
 
 function createRow (...cells) {
   const row = document.createElement('tr');
@@ -61,14 +62,17 @@ function listImages () {
   
   if (!window.imageList) return;
   
-  for (const {file, img} of window.imageList) {
+  for (const {file, img, name} of window.imageList) {
     const tn = img.cloneNode();
     tn.classList.add('thumbnail');
     
     //list.append(createRow(tn, file.name, humanFileSize(file.size)));
     const row = listRow.cloneNode(true);
-    row.querySelector('tn').append(tn);
-    
+    window.row = row
+    row.querySelector('.tn')?.append(tn);
+    row.querySelector('.name')?.append(name);
+    row.querySelector('.size')?.append(humanFileSize(file.size));
+    list.append(row);
     
     count ++;
     size += file.size;
@@ -107,4 +111,21 @@ window.addEventListener('change', async event => {
 
 window.addEventListener('click', event => {
   if (event.target.id === 'go') generate();
+  else if (event.target.name === 'remove') null;
 });
+  
+window.addEventListener('load', event => {
+  // Open IndexedDB database
+  const DBOpenRequest = window.indexedDB.open('toDoList', DB_VERSION);
+
+  // Register two event handlers to act on the database being opened successfully, or not
+  DBOpenRequest.onerror = (event) => {
+    console.error('Error loading database.');
+  };
+
+  DBOpenRequest.onsuccess = (event) => {
+    console.info('Database initialised.');
+    window.db = DBOpenRequest.result;
+    listImages();
+  };
+})
