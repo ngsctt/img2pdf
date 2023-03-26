@@ -11,8 +11,10 @@ const ppmm = document.getElementById('ppmm');
 const PPMM = 5.91;  // (equivalent to 150dpi)
 const DB_VERSION = 1;
 
-const db = localforage.createInstance({
-  name: "nameHere"
+const db = window.localforage.createInstance({
+  name: 'img2pdf',
+  storeName: 'images',
+  description: 'Images for processing into a PDF'
 });
 
 function createRow (...cells) {
