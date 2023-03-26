@@ -111,19 +111,21 @@ async function generate () {
   pdf.deletePage(1);
   let page = 0;
   
-  await table.each(async ({file, name, id}) => {
-    console.log('Rendering', {file, name, id})
+  for (const {file, name, id} of await table.toArray()) {
+  // await table.each(async ({file, name, id}) => {
     const img = new Image;
     img.src = URL.createObjectURL(file);
     await img.decode();
     const {width, height} = img;
+    console.log('Rendering', {file, name, id, width, height, img})
     pdf.addPage([width, height], width > height ? 'landscape' : 'portrait') && page++;
     pdf.addImage(img, 'PNG', 0, 0, width, height);
     pdf.outline.add(null, name, { pageNumber: page });
     //URL.revokeObjectURL(img.src);
-  });
+  // });
+  }
   
-  window.open(pdf.output('bloburl'), '_blank')
+  window.open(pdf.output('bloburl'), '_blank');
 }
 
 window.addEventListener('change', async event => {
