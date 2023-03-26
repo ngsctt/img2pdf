@@ -27,7 +27,7 @@
         --shadow-depth: 0.15rem;
         --shadow-color: #000000;
         height: 100%;
-        color-scheme: light dark;
+        /* color-scheme: light dark; */
       }
       
       @media (prefers-color-scheme: dark) {
@@ -56,17 +56,20 @@
       }
 
       .title {
-        color: transparent;
         font-style: normal;
         font-weight: bold;
         font-size: 6rem;
         line-height: 105%;
         margin: 0 0 2rem;
+        color: transparent;
         text-shadow:
           -.025em -.025em 0 rgba(  0, 255, 255, 0.5),
            .025em  .025em 0 rgba(255,   0, 255, 0.5),
           -.025em -.025em 0 rgba(  0, 255, 255, 1),
            .025em  .025em 0 rgba(255,   0, 255, 1);
+        mix-blend-mode: difference;
+        color: fuchsia;
+        text-shadow: .05em .05em 0 cyan;
       }
 
       button,
