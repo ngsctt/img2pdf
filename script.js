@@ -11,8 +11,9 @@ const ppmm = document.getElementById('ppmm');
 const PPMM = 5.91;  // (equivalent to 150dpi)
 const DB_VERSION = 1;
 
-const db = new Dexie('img2pdf');
-db.version(1).stores({ images: '++id'});
+window.db = new window.Dexie('img2pdf');
+const db = window.db;
+db.version(DB_VERSION).stores({ images: '++id'});
 
 function createRow (...cells) {
   const row = document.createElement('tr');
@@ -51,11 +52,14 @@ async function addImage (files) {
     const img = new Image;
     img.src = url;
     window.imageList.push({ file, img, name: file.name });
+    db.images.add({ file, img, name: file.name })
+      .then(x => console.log(x))
+      .catch(error => console.error(error));
   }
   console.log(window.imageList);
 }
 
-function listImages () {
+async function listImages () {
   let count = 0, size = 0;
   while (list.firstChild) {
     list.removeChild(list.lastChild);
@@ -64,6 +68,8 @@ function listImages () {
   total.size.textContent = '';
   
   if (!window.imageList) return;
+  
+  //await db.images.each(image => console.log(image));
   
   for (const {file, img, name} of window.imageList) {
     const tn = img.cloneNode();
@@ -108,7 +114,7 @@ window.addEventListener('change', async event => {
   if (event.target === upload) {
     await addImage(upload.files);
     upload.value = '';
-    listImages();
+    await listImages();
   }
 });
 
