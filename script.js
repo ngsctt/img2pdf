@@ -42,32 +42,25 @@ function humanFileSize (bytes) {
 }
 
 async function addImage (files) {
-  console.log('Add files...', window.imageList)
-  if (!window.imageList) window.imageList = [];
-  
-  console.log(files)
-  
+  // if (!window.imageList) window.imageList = [];
+    
   for (const file of files) {
     if (!checkFormat(file.type)) continue;
     
     const url = URL.createObjectURL(file)
     const img = new Image;
     img.src = url;
-    window.imageList.push({ file, name: file.name });
+    // window.imageList.push({ file, name: file.name });
     await table.add({ file, name: file.name });
   }
-  console.log(window.imageList);
-  console.log(await table.toArray());
 }
 
 async function removeImage (id) {
   id = Number(id);
-  console.log(`remove id ${id}`)
   await table.delete(id);
 }
 
 async function clearImages () {
-  console.log('Clear images')
   await table.clear();
 }
 
@@ -110,24 +103,20 @@ async function generate () {
     units: 'px',
     hotfixes: ['px_scaling']
   });
-  // pdf.deletePage(1);
+  pdf.deletePage(1);
   let page = 0;
   
   for (const {file, name, id} of await table.toArray()) {
-  // await table.each(async ({file, name, id}) => {
     const img = new Image;
     img.src = URL.createObjectURL(file);
     await img.decode();
     const {width, height} = img;
-    console.log('Rendering', {file, name, id, width, height, img})
     pdf.addPage([width/PPMM, height/PPMM], width > height ? 'landscape' : 'portrait') && page++;
     const w = pdf.internal.pageSize.getWidth();
     const h = pdf.internal.pageSize.getHeight()
-    console.log({width, height, w, h })
     pdf.addImage(img, 'PNG', 0, 0, w, h);
     pdf.outline.add(null, name, { pageNumber: page });
     //URL.revokeObjectURL(img.src);
-  // });
   }
   
   window.open(pdf.output('bloburl'), '_blank');
@@ -156,5 +145,5 @@ window.addEventListener('click', async event => {
   
 window.addEventListener('load', event => {
   listImages();
-  scale.value = window.localStorage.getItem('img2pdf-scale') || 1;
+  // scale.value = window.localStorage.getItem('img2pdf-scale') || 1;
 })
