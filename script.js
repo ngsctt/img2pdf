@@ -67,12 +67,14 @@ async function generate () {
     hotfixes: ['px_scaling']
   });
   pdf.deletePage(1);
+  let page = 0;
   
   for (const {file, img} of window.imageList) {
     await img.decode();
     const {width, height} = img;
-    pdf.addPage([width, height], width > height ? 'landscape' : 'portrait');
+    pdf.addPage([width, height], width > height ? 'landscape' : 'portrait') && page++;
     pdf.addImage(img, 'PNG', 0, 0, width, height);
+    pdf.outline.add(null, file.name, { pageNumber: page });
   }
   
   window.open(pdf.output('bloburl'), '_blank')
