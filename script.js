@@ -58,34 +58,36 @@ async function addImage (files) {
   console.log(await table.toArray());
 }
 
+async function remove
+
 async function listImages () {
   let count = 0, size = 0;
-  while (list.firstChild) {
-    list.removeChild(list.lastChild);
-  }
-  total.count.textContent = '';
-  total.size.textContent = '';
   
-  if (!window.imageList) return;
-  
-  //await db.images.each(image => console.log(image));
-  
-  for (const {file, name} of window.imageList) {
+  const fragment = new DocumentFragment();
+    
+  await table.each(({file, name, id}) => {
     const tn = new Image;
     tn.src = URL.createObjectURL(file);
     tn.classList.add('thumbnail');
     
-    //list.append(createRow(tn, file.name, humanFileSize(file.size)));
     const row = listRow.cloneNode(true);
     window.row = row
     row.querySelector('.tn')?.append(tn);
     row.querySelector('.name')?.append(name);
     row.querySelector('.size')?.append(humanFileSize(file.size));
-    list.append(row);
+    row.querySelector('tr').dataset.dbk = id;
+    fragment.append(row);
     
     count ++;
     size += file.size;
+  });
+  
+  while (list.firstChild) {
+    list.removeChild(list.lastChild);
   }
+  total.count.textContent = '';
+  total.size.textContent = '';
+  list.append(fragment);
   
   total.count.textContent = `${count} images total`;
   total.size.textContent = humanFileSize(size);
@@ -99,7 +101,7 @@ async function generate () {
   pdf.deletePage(1);
   let page = 0;
   
-  for (const {file, name} of window.imageList) {
+  await table.each(async ({file, name, id}) => {
     const img = new Image;
     img.src = URL.createObjectURL(file);
     await img.decode();
@@ -107,8 +109,8 @@ async function generate () {
     pdf.addPage([width, height], width > height ? 'landscape' : 'portrait') && page++;
     pdf.addImage(img, 'PNG', 0, 0, width, height);
     pdf.outline.add(null, name, { pageNumber: page });
-    
-  }
+    URL.revokeObjectURL(img.src);
+  });
   
   window.open(pdf.output('bloburl'), '_blank')
 }
@@ -127,4 +129,5 @@ window.addEventListener('click', event => {
 });
   
 window.addEventListener('load', event => {
+  listImages();
 })
