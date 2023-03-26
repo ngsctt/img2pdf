@@ -8,6 +8,7 @@ const total = {
 const go = document.getElementById('go');
 const ppmm = document.getElementById('ppmm');
 const clear = document.getElementById('clear');
+const scale = document.getElementById('scale');
 
 const PPMM = 5.91;  // (equivalent to 150dpi)
 const DB_VERSION = 2;
@@ -104,6 +105,7 @@ async function listImages () {
 }
 
 async function generate () {
+  const factor = scale.value;
   const pdf = new window.jspdf.jsPDF({
     units: 'px',
     hotfixes: ['px_scaling']
@@ -118,7 +120,10 @@ async function generate () {
     await img.decode();
     const {width, height} = img;
     console.log('Rendering', {file, name, id, width, height, img})
-    pdf.addPage([width, height], width > height ? 'landscape' : 'portrait') && page++;
+    pdf.addPage([width*factor, height*factor], width > height ? 'landscape' : 'portrait') && page++;
+    const w = pdf.internal.pageSize.getWidth();
+    const h = pdf.internal.pageSize.getHeight()
+    console.log({width, height, w, h })
     pdf.addImage(img, 'PNG', 0, 0, width, height);
     pdf.outline.add(null, name, { pageNumber: page });
     //URL.revokeObjectURL(img.src);
