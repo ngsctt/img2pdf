@@ -7,6 +7,7 @@ const total = {
 };
 const go = document.getElementById('go');
 const ppmm = document.getElementById('ppmm');
+const clear = document.getElementById('clear');
 
 const PPMM = 5.91;  // (equivalent to 150dpi)
 const DB_VERSION = 2;
@@ -58,7 +59,16 @@ async function addImage (files) {
   console.log(await table.toArray());
 }
 
-async function remove
+async function removeImage (id) {
+  id = Number(id);
+  console.log(`remove id ${id}`)
+  await table.delete(id);
+}
+
+async function clearImages () {
+  console.log('Clear images')
+  await table.clear();
+}
 
 async function listImages () {
   let count = 0, size = 0;
@@ -75,7 +85,7 @@ async function listImages () {
     row.querySelector('.tn')?.append(tn);
     row.querySelector('.name')?.append(name);
     row.querySelector('.size')?.append(humanFileSize(file.size));
-    row.querySelector('tr').dataset.dbk = id;
+    row.querySelector('.remove').dataset.id = id;
     fragment.append(row);
     
     count ++;
@@ -102,6 +112,7 @@ async function generate () {
   let page = 0;
   
   await table.each(async ({file, name, id}) => {
+    console.log('Rendering', {file, name, id})
     const img = new Image;
     img.src = URL.createObjectURL(file);
     await img.decode();
@@ -109,7 +120,7 @@ async function generate () {
     pdf.addPage([width, height], width > height ? 'landscape' : 'portrait') && page++;
     pdf.addImage(img, 'PNG', 0, 0, width, height);
     pdf.outline.add(null, name, { pageNumber: page });
-    URL.revokeObjectURL(img.src);
+    //URL.revokeObjectURL(img.src);
   });
   
   window.open(pdf.output('bloburl'), '_blank')
@@ -123,9 +134,15 @@ window.addEventListener('change', async event => {
   }
 });
 
-window.addEventListener('click', event => {
-  if (event.target.id === 'go') generate();
-  else if (event.target.name === 'remove') null;
+window.addEventListener('click', async event => {
+  if (event.target === go) generate();
+  else if (event.target.name === 'remove') {
+    await removeImage(event.target.dataset.id);
+    await listImages();
+  } else if (event.target === clear) {
+    await clearImages();
+    await listImages();
+  }
 });
   
 window.addEventListener('load', event => {
