@@ -52,9 +52,15 @@ async function addImage (files) {
     const img = new Image;
     img.src = url;
     window.imageList.push({ file, img, name: file.name });
-    db.images.add({ file, img, name: file.name })
-      .then(x => console.log(x))
-      .catch(error => console.error(error));
+    await db.transaction('rw', db.images, async ()=>{
+      await db.images.add({ file, img, name: file.name })
+        .then(x => console.log(x))
+        .catch(error => console.error(error));
+    }).then(() => {
+        console.log("Transaction committed");
+    }).catch(err => {
+        console.error(err.stack);
+    });
   }
   console.log(window.imageList);
 }
