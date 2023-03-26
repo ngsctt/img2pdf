@@ -107,11 +107,15 @@
         color: #2800ff;
       }
     </style>
-    <script id="jspdf" src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script id="jspdf" src="lhttps://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
     <script type="application/javascript">
-      if (window.jsPDF) return;
-      const script = document.createElement('script');
-      script.src = '/jspdf@2.5.1.umd.min.js';
+      console.log(!window.jsPDF)
+      if (!window.jspdf) {
+        console.log('no jsPDF');
+        const s = document.createElement('script');
+        s.src = '/jspdf@2.5.1.umd.min.js';
+        document.body.insertBefore(s, document.body.firstChild);
+      }  else console.log('jsPDF loaded')
     </script>
     <script type="module" src="/script.js"></script>
   </body>
