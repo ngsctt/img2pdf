@@ -1,3 +1,6 @@
+import { PDFDocument } from 'https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.esm.js';
+// import { PDFDocument } from 'https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.esm.min.js';
+
 const upload = document.getElementById('upload');
 const list = document.getElementById('list');
 const listRow = document.getElementById('list-row').content;
@@ -6,9 +9,18 @@ const total = {
   size: document.getElementById('total-size'),
 };
 const go = document.getElementById('go');
-const ppmm = document.getElementById('ppmm');
+// const ppmm = document.getElementById('ppmm');
 const clear = document.getElementById('clear');
 const scale = document.getElementById('scale');
+// const resultRow = document.getElementById('result-row');
+// const result = document.createElement('a');
+const result = document.getElementById('result');
+const resultSize = document.getElementById('result-size');
+// const download = document.getElementById('download');
+// result.classList.add('result', 'button');
+// result.textContent = 'Generated PDF';
+// result.target = '_blank';
+// result.download = 'img2pdf';
 
 const PPMM = 5.91;  // (equivalent to 150dpi)
 const DB_VERSION = 2;
@@ -42,7 +54,6 @@ function humanFileSize (bytes) {
 }
 
 async function addImage (files) {
-  // if (!window.imageList) window.imageList = [];
     
   for (const file of files) {
     if (!checkFormat(file.type)) continue;
@@ -50,7 +61,6 @@ async function addImage (files) {
     const url = URL.createObjectURL(file)
     const img = new Image;
     img.src = url;
-    // window.imageList.push({ file, name: file.name });
     await table.add({ file, name: file.name });
   }
 }
@@ -98,28 +108,39 @@ async function listImages () {
 }
 
 async function generate () {
-  const PPMM = ppmm.value || PPMM;
-  const pdf = new window.jspdf.jsPDF({
-    units: 'px',
-    hotfixes: ['px_scaling']
-  });
-  pdf.deletePage(1);
+  result.hidden = true;
+  result.disabled = true;
+  resultSize.textContent = '';
+  URL.revokeObjectURL(result.href);
+  result.href = '';
+  // const PPMM = ppmm.value || PPMM;
+  const pdf = await PDFDocument.create();
   let page = 0;
   
   for (const {file, name, id} of await table.toArray()) {
-    const img = new Image;
-    img.src = URL.createObjectURL(file);
-    await img.decode();
-    const {width, height} = img;
-    pdf.addPage([width/PPMM, height/PPMM], width > height ? 'landscape' : 'portrait') && page++;
-    const w = pdf.internal.pageSize.getWidth();
-    const h = pdf.internal.pageSize.getHeight()
-    pdf.addImage(img, 'PNG', 0, 0, w, h);
-    pdf.outline.add(null, name, { pageNumber: page });
-    //URL.revokeObjectURL(img.src);
+    const buffer = await file.arrayBuffer();
+    let img;
+    if (file.type === 'image/png') img = await pdf.embedPng(buffer);
+    else if (file.type === 'image/jpeg' || file.type === 'image/jpg') img = await pdf.embedJpg(buffer);
+    else throw new Error(`Image not PNG or JPEG: ${name}`)
+    const {width, height} = img.scale(1);
+    const page = pdf.addPage([width, height]);
+    page.drawImage(img, {
+      x: 0,
+      y: 0,
+      width,
+      height,
+    });
   }
   
-  window.open(pdf.output('bloburl'), '_blank');
+  const bytes  = new Uint8Array( await pdf.save() ); 
+  // const blob = new Blob([bytes],  {type: 'application/pdf'});
+  const file = new File([bytes], 'img2pdf.pdf', {type: 'application/pdf'});
+  const url = URL.createObjectURL(file);
+  result.href = url;
+  resultSize.textContent = `(${humanFileSize(file.size)})`;
+  result.disabled = false;
+  result.hidden = false;
 }
 
 window.addEventListener('change', async event => {
@@ -147,3 +168,7 @@ window.addEventListener('load', event => {
   listImages();
   // scale.value = window.localStorage.getItem('img2pdf-scale') || 1;
 })
+
+Object.assign(window, {
+  PDFDocument,
+});
