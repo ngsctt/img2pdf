@@ -134,7 +134,6 @@ async function generate () {
   }
   
   const bytes  = new Uint8Array( await pdf.save() ); 
-  // const blob = new Blob([bytes],  {type: 'application/pdf'});
   const file = new File([bytes], 'img2pdf.pdf', {type: 'application/pdf'});
   const url = URL.createObjectURL(file);
   result.href = url;
@@ -166,7 +165,6 @@ window.addEventListener('click', async event => {
   
 window.addEventListener('load', event => {
   listImages();
-  // scale.value = window.localStorage.getItem('img2pdf-scale') || 1;
 })
 
 Object.assign(window, {
