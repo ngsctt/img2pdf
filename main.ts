@@ -1,5 +1,5 @@
 import { emptyDir } from 'https://deno.land/std@0.182.0/fs/mod.ts';
-import { resolve, fromFileUrl, join } from "https://deno.land/std@0.182.0/path/mod.ts";
+import { join } from "https://deno.land/std@0.182.0/path/mod.ts";
 import { DOMParser } from 'https://deno.land/x/deno_dom@v0.1.38/deno-dom-wasm.ts';
 import { serve } from 'https://deno.land/std@0.182.0/http/server.ts';
 
@@ -34,7 +34,7 @@ async function build () {
   await Deno.writeTextFile(join(publicDir, 'index.html'), document.documentElement.outerHTML);
 }
 
-async function server () { console.log('SERVE!!!');
+function server () { console.log('SERVE!!!');
   const port = 8888;
 
   const handler = async (request: Request): Promise<Response> => {
