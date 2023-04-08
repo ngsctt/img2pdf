@@ -95,6 +95,7 @@ async function generate () {
   URL.revokeObjectURL(result.href);
   result.href = '';
   const pdf = await PDFDocument.create();
+  pdf.setCreator('img2pdf (https://github.com/ngsctt/img2pdf)');
   
   for (const {file, name, id} of await table.toArray()) {
     const buffer = await file.arrayBuffer();
