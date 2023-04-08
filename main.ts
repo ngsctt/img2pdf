@@ -4,7 +4,7 @@ import { DOMParser } from 'https://deno.land/x/deno_dom@v0.1.38/deno-dom-wasm.ts
 import { serve } from 'https://deno.land/std@0.182.0/http/server.ts';
 
 const __dirname = new URL('.', import.meta.url).pathname;
-const publicDir = './public';
+const publicDir = './docs';
 
 await build();
 if (Deno.args.indexOf('serve') > -1) server();
