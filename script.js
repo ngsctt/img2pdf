@@ -1,5 +1,4 @@
-import { PDFDocument } from 'https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.esm.js';
-// import { PDFDocument } from 'https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.esm.min.js';
+import { PDFDocument } from 'https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.esm.min.js';
 
 const upload = document.getElementById('upload');
 const list = document.getElementById('list');
@@ -9,18 +8,10 @@ const total = {
   size: document.getElementById('total-size'),
 };
 const go = document.getElementById('go');
-// const ppmm = document.getElementById('ppmm');
 const clear = document.getElementById('clear');
 const scale = document.getElementById('scale');
-// const resultRow = document.getElementById('result-row');
-// const result = document.createElement('a');
 const result = document.getElementById('result');
 const resultSize = document.getElementById('result-size');
-// const download = document.getElementById('download');
-// result.classList.add('result', 'button');
-// result.textContent = 'Generated PDF';
-// result.target = '_blank';
-// result.download = 'img2pdf';
 
 const PPMM = 5.91;  // (equivalent to 150dpi)
 const DB_VERSION = 2;
@@ -28,16 +19,6 @@ const DB_VERSION = 2;
 window.db = new window.Dexie('img2pdf');
 window.db.version(DB_VERSION).stores({ images: '++id,name'});
 const table = window.db.table('images');
-
-function createRow (...cells) {
-  const row = document.createElement('tr');
-  for (const content of cells) {
-    const cell = document.createElement('td');
-    cell.append(content);
-    row.append(cell);
-  }
-  return row;
-}
 
 function checkFormat (mimetype) {
   return /image\/.+/.test(mimetype);
@@ -113,9 +94,7 @@ async function generate () {
   resultSize.textContent = '';
   URL.revokeObjectURL(result.href);
   result.href = '';
-  // const PPMM = ppmm.value || PPMM;
   const pdf = await PDFDocument.create();
-  let page = 0;
   
   for (const {file, name, id} of await table.toArray()) {
     const buffer = await file.arrayBuffer();
