@@ -23,11 +23,11 @@ async function build () {
 
   if (styleElement) {
     const prefix = styleElement.innerHTML;
-    styleElement.innerHTML = styles.replace(/^|\n(?!\s*$)/g, prefix + '  ').replace(/(\n?\s*$/, prefix);
+    styleElement.innerHTML = styles.replace(/^|\n(?!\s*$)/g, prefix + '  ').replace(/\n?\s*$/, prefix);
   }
   if (scriptElement) {
     const prefix = scriptElement.innerHTML;
-    scriptElement.innerHTML = script.replace(/^|\n(?!\s*$)/g, prefix + '  ').replace(/(\n?\s*$/, prefix);
+    scriptElement.innerHTML = script.replace(/^|\n(?!\s*$)/g, prefix + '  ').replace(/\n?\s*$/, prefix);
   }
 
   await emptyDir(publicDir);
